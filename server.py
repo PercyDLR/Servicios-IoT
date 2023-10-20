@@ -9,6 +9,6 @@ class Medicion(BaseModel):
 
 app = FastAPI()
 
-@app.get("/")
+@app.post("/")
 async def nuevaMedicion(medicion: Medicion):
     return medicion
