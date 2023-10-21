@@ -23,11 +23,33 @@ USE `IoT_DB` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `IoT_DB`.`lugar` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `nombre` VARCHAR(255) NOT NULL,
-  `latitud` FLOAT NOT NULL,
-  `longitud` FLOAT NOT NULL,
+  `nombre` VARCHAR(255) NULL,
+  `latitud` FLOAT NULL,
+  `longitud` FLOAT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_unicode_ci;
+
+
+-- -----------------------------------------------------
+-- Table `IoT_DB`.`medicion`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `IoT_DB`.`medicion` (
+  `id` INT(11) GENERATED ALWAYS AS (),
+  `id_lugar` INT(11) NOT NULL,
+  `temp_avg` FLOAT NOT NULL,
+  `humedad_avg` FLOAT NOT NULL,
+  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  INDEX `fk_medicion_lugar1_idx` (`id_lugar` ASC) VISIBLE,
+  CONSTRAINT `fk_medicion_lugar1`
+    FOREIGN KEY (`id_lugar`)
+    REFERENCES `IoT_DB`.`lugar` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_unicode_ci;
@@ -55,26 +77,22 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `IoT_DB`.`medicion`
+-- Table `IoT_DB`.`bateria`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `IoT_DB`.`medicion` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `IoT_DB`.`bateria` (
+  `id` INT NOT NULL AUTO_INCREMENT,
   `id_sensor` INT(11) NOT NULL,
-  `id_lugar` INT(11) NOT NULL,
-  `temp_avg` FLOAT NOT NULL,
-  `humedad_avg` FLOAT NOT NULL,
-  `timestamp` TIMESTAMP NOT NULL,
+  `valor` FLOAT NOT NULL,
+  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `medicion_ibfk_1` (`id_sensor` ASC) VISIBLE,
-  CONSTRAINT `medicion_ibfk_1`
+  INDEX `fk_bateria_sensor1_idx` (`id_sensor` ASC) VISIBLE,
+  CONSTRAINT `fk_bateria_sensor1`
     FOREIGN KEY (`id_sensor`)
     REFERENCES `IoT_DB`.`sensor` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
