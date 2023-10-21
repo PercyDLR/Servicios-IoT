@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from getpass import getpass
+from datetime import datetime
 import funciones as fun
 
 pwd = getpass("Ingrese la contraseña de la db: ")
@@ -29,6 +30,27 @@ async def nuevaMedicion(medicion: Medicion):
     sensor = fun.getSensor(pwd,medicion.id_sensor)
 
     # Con esta infrmación ya se puede guardar la medición
-    fun.insertMedicion(pwd,medicion.dict(),sensor)
+    medicionID, bateriaID = fun.insertMedicion(pwd,medicion.dict(),sensor)
 
-    return sensor
+    response = {
+        "sensor": {
+            "id": sensor["id"],
+            "nombre": sensor["nombre"],
+            "id_lugar": sensor["id_lugar"],
+            "estado": sensor["estado"]
+        },
+        "medicion": {
+            "id": medicionID,
+            "id_lugar": sensor["id_lugar"],
+            "temp_avg": medicion.temp_avg,
+            "hum_avg": medicion.hum_avg,
+            "timestamp": datetime.now()
+        },
+        "bateria": {
+            "id": bateriaID,
+            "valor": medicion.bateria,
+            "timestamp": datetime.now()
+        }
+    }
+
+    return response

@@ -28,5 +28,9 @@ def insertMedicion(pwd: str, datos: dict, sensor: dict):
         cursor = mydb.cursor(dictionary=True)
         cursor.execute(query,valores)
 
+        medicionID = cursor.lastrowid
+
         cursor.execute(f"INSERT INTO bateria (id_sensor,valor) VALUES ({datos['id_sensor']},{datos['bateria']})")
-        mydb.commit()
+        bateriaID = cursor.lastrowid
+
+        return (medicionID,bateriaID)
