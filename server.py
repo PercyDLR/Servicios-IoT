@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from getpass import getpass
 from datetime import datetime
 import funciones as fun
+import csv
 
 pwd = getpass("Ingrese la contraseña de la db: ")
 
@@ -22,6 +23,24 @@ class Medicion(BaseModel):
     bateria: float
 
 app = FastAPI()
+
+
+class SigfoxMessage(BaseModel):
+    deviceId: str
+    time: str
+    humedad: float
+    temperatura: float
+    bateria: float
+
+@app.post("/sigfox")
+async def create_sigfox_message(message: SigfoxMessage):
+    with open('sigfox_data.csv', mode ='a', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=["deviceId", "time", "humedad", "temperatura", "bateria"])
+        if file.tell() == 0:
+            writer.writeheader()  # If file is empty, write a header
+        writer.writerow(message.dict())
+    return {"message": message}
+
 
 @app.post("/medicion")
 async def nuevaMedicion(medicion: Medicion):
@@ -54,3 +73,8 @@ async def nuevaMedicion(medicion: Medicion):
     }
 
     return response
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
