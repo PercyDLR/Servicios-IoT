@@ -24,8 +24,8 @@ USE `IoT_DB` ;
 CREATE TABLE IF NOT EXISTS `IoT_DB`.`lugar` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(255) NULL,
-  `latitud` FLOAT NULL,
-  `longitud` FLOAT NULL,
+  `latitud` DOUBLE NULL,
+  `longitud` DOUBLE NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
 ENGINE = InnoDB
@@ -37,7 +37,7 @@ COLLATE = utf8mb4_unicode_ci;
 -- Table `IoT_DB`.`medicion`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `IoT_DB`.`medicion` (
-  `id` INT(11) GENERATED ALWAYS AS (),
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `id_lugar` INT(11) NOT NULL,
   `temp_avg` FLOAT NOT NULL,
   `humedad_avg` FLOAT NOT NULL,
